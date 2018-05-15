@@ -1,8 +1,123 @@
+import java.text.DecimalFormat;
+
 class PageRank {
 
+    private static double N = 0;
+    private static int size;
+    private static final double dampingFactor = 0.85;
+    private static double offset = 0;
+    private static double[] pageRank;
+    private static double[] contribution;
+    private static double[] old_pageRank;
+    private static int iterations;
+
     static void rank(Article... articles) {
-        for (Article a : articles) {
-            System.out.println(a.getTitle());
+        N = articles.length;
+
+        offset = (1 - dampingFactor) / N;
+
+        size = articles.length;
+
+        double initialPageRank = 1 / N;
+        pageRank = new double[size];
+        contribution = new double[size];
+        old_pageRank = new double[size];
+        offset = (1 - dampingFactor) / size;
+
+
+        for (int i = 0; i < size; i++) {
+            pageRank[i] = initialPageRank;
+            old_pageRank[i] = initialPageRank;
+        }
+
+        int count = 0;
+        printPageRank(count);
+        //Loop until the values converge
+        do {
+            //Calculate the page rank
+            calculatePageRank(articles);
+
+
+            ++count;
+
+            //Print the page rank
+            if (size <= 10) {
+                printPageRank(count);
+            }
+
+        } while (!didConverge(count));
+
+        for (int i = 0; i < size; i++) {
+            articles[i].setRank(pageRank[i]);
+            System.out.println("Title: " + articles[i].getTitle() + ": " + articles[i].getRank());
+        }
+
+    }
+
+    /**
+     * Calculate the page rank
+     */
+    public static void calculatePageRank(Article... articles) {
+
+        double[] newPageRankArray = new double[size];
+        double intermediateCalculation;
+        for (int i = 0; i < pageRank.length; i++) {
+            intermediateCalculation = 0;
+            for (int j = 0; j < pageRank.length; j++) {
+                if (articles[j].getCitations().contains(articles[i])) {
+                    intermediateCalculation += pageRank[j] / articles[j].getNumberOfCitations();
+                }
+            }
+            newPageRankArray[i] = offset + dampingFactor * intermediateCalculation;
+        }
+
+        old_pageRank = pageRank;
+        pageRank = newPageRankArray;
+    }
+
+    /**
+     * Print the Page Rank Values
+     */
+    public static void printPageRank(int iteration) {
+
+        if (iteration == 0) {
+            System.out.print("Base : " + iteration + " : ");
+        } else {
+            System.out.print("Iterat : " + iteration + " : ");
+        }
+
+        DecimalFormat numberFormat = new DecimalFormat("0.0000000");
+
+        for (int i = 0; i < pageRank.length; i++) {
+            System.out.print("PR[" + i + "] = " + numberFormat.format(pageRank[i]) + " ");
+        }
+        System.out.println();
+    }
+
+    /**
+     * Check if the values of page rank converged
+     *
+     * @return True if the converge is successful
+     */
+    public static boolean didConverge(int current_iteration) {
+        double multiplicationFactor;
+        if (iterations > 0) {
+            return current_iteration == iterations;
+        } else {
+            if (iterations == 0) {
+                multiplicationFactor = 100000;
+            } else {
+                multiplicationFactor = Math.pow(10, (iterations * -1));
+            }
+
+            for (int i = 0; i < pageRank.length; i++) {
+                if ((int) Math.floor(pageRank[i] * multiplicationFactor) != (int) Math.floor(old_pageRank[i] * multiplicationFactor)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
+
+
 }

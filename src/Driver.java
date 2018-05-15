@@ -9,17 +9,23 @@ public class Driver {
      * @return array of articles based on actual articles on google scholar
      */
     private static Article[] generateArticleData() {
-        Article[] articles = new Article[10];
+        Article[] articles = new Article[4];
 
-        articles[0] = new Article("End to end learning for self-driving cars");
-        articles[1] = new Article("Eyeriss...", articles[0]);
-        articles[2] = new Article("Towards evaluating the robustness of neural networks", articles[0]);
-        articles[3] = new Article("Deep predictive coding networks...", articles[0]);
-        articles[4] = new Article("End-to-end learning of driving models...", articles[0]);
+        articles[0] = new Article("A");
+        articles[1] = new Article("B", articles[0], articles[2]);
+        articles[2] = new Article("C", articles[0]);
+        articles[3] = new Article("D", articles[0], articles[1], articles[2]);
 
-        articles[5] = new Article("Backpropagation for energy-efficient neuromorphic computing", articles[1]);
-        articles[6] = new Article("Minerva...", articles[1]);
-        articles[7] = new Article("Cnvlutin", articles[1]);
+
+//        articles[0] = new Article("End to end learning for self-driving cars");
+//        articles[1] = new Article("Eyeriss...", articles[0]);
+//        articles[2] = new Article("Towards evaluating the robustness of neural networks", articles[0]);
+//        articles[3] = new Article("Deep predictive coding networks...", articles[0]);
+//        articles[4] = new Article("End-to-end learning of driving models...", articles[0]);
+//
+//        articles[5] = new Article("Backpropagation for energy-efficient neuromorphic computing", articles[1]);
+//        articles[6] = new Article("Minerva...", articles[1]);
+//        articles[7] = new Article("Cnvlutin", articles[1]);
 
         
         return articles;
