@@ -39,14 +39,15 @@ class PageRank {
         int count = 0;
         printPageRank(count);
 
-        //start execution timer
-        long startTime = System.nanoTime();
+
+        long startTime;
+        long endTime;
         //Loop until the values converge
         do {
             //Calculate the page rank
-
+            startTime = System.nanoTime();
             calculatePageRank(articles);
-
+            endTime = System.nanoTime();
             ++count;
 
             //Print the page rank
@@ -55,9 +56,6 @@ class PageRank {
             }
 
         } while (!didConverge(count));
-
-        //end execution timer
-        long endTime = System.nanoTime();
 
         for (int i = 0; i < size; i++) {
             articles[i].setRank(pageRank[i]);
