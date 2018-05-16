@@ -21,9 +21,15 @@ class Article {
         return new ArrayList<>(Arrays.asList(citations));
     }
 
-    double getNumberOfCitations() {return (double) citations.length;}
+    double getNumberOfCitations() {
+        return (double) citations.length;
+    }
 
-    void setRank(double rank){this.rank = rank;}
+    void setRank(double rank) {
+        this.rank = rank;
+    }
 
-    double getRank(){return rank;}
+    double getRank() {
+        return rank;
+    }
 }

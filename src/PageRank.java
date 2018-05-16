@@ -1,4 +1,5 @@
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 class PageRank {
 
@@ -7,11 +8,17 @@ class PageRank {
     private static final double dampingFactor = 0.85;
     private static double offset = 0;
     private static double[] pageRank;
-    private static double[] contribution;
     private static double[] old_pageRank;
     private static int iterations;
+    private static ArrayList<Long> times;
 
-    static void rank(Article... articles) {
+    /**
+     * Setup variables for page rank algorithm, execute and time algorithm till convergence
+     *
+     * @param articles Array of articles
+     * @return long execution time
+     */
+    static long rank(Article... articles) {
         N = articles.length;
 
         offset = (1 - dampingFactor) / N;
@@ -20,23 +27,25 @@ class PageRank {
 
         double initialPageRank = 1 / N;
         pageRank = new double[size];
-        contribution = new double[size];
         old_pageRank = new double[size];
         offset = (1 - dampingFactor) / size;
-
 
         for (int i = 0; i < size; i++) {
             pageRank[i] = initialPageRank;
             old_pageRank[i] = initialPageRank;
         }
 
+        times = new ArrayList<>();
         int count = 0;
         printPageRank(count);
+
+        //start execution timer
+        long startTime = System.nanoTime();
         //Loop until the values converge
         do {
             //Calculate the page rank
-            calculatePageRank(articles);
 
+            calculatePageRank(articles);
 
             ++count;
 
@@ -47,17 +56,26 @@ class PageRank {
 
         } while (!didConverge(count));
 
+        //end execution timer
+        long endTime = System.nanoTime();
+
         for (int i = 0; i < size; i++) {
             articles[i].setRank(pageRank[i]);
             System.out.println("Title: " + articles[i].getTitle() + ": " + articles[i].getRank());
         }
 
+        for (long time : times) {
+            System.out.println(time);
+        }
+        return (endTime - startTime);
     }
 
     /**
      * Calculate the page rank
+     *
+     * @param articles list of articles
      */
-    public static void calculatePageRank(Article... articles) {
+    private static void calculatePageRank(Article... articles) {
 
         double[] newPageRankArray = new double[size];
         double intermediateCalculation;
@@ -78,7 +96,7 @@ class PageRank {
     /**
      * Print the Page Rank Values
      */
-    public static void printPageRank(int iteration) {
+    private static void printPageRank(int iteration) {
 
         if (iteration == 0) {
             System.out.print("Base : " + iteration + " : ");
@@ -99,7 +117,7 @@ class PageRank {
      *
      * @return True if the converge is successful
      */
-    public static boolean didConverge(int current_iteration) {
+    private static boolean didConverge(int current_iteration) {
         double multiplicationFactor;
         if (iterations > 0) {
             return current_iteration == iterations;
@@ -118,6 +136,4 @@ class PageRank {
             return true;
         }
     }
-
-
 }
